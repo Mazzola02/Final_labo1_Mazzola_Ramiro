@@ -1,7 +1,7 @@
 import pygame
 import sys
 from constantes import *
-from gui_form import FormMenu
+from zgui_form import FormMenu
 
 screen = pygame.display.set_mode((1200, 800))
 pygame.init()

@@ -1,6 +1,6 @@
 import pygame
 from constantes import *
-from gui_widget import Widget
+from zgui_widget import Widget
 
 class Button(Widget):
     def __init__(self, master_form, x, y, w, h, color_back, color_border, on_click, on_click_param, text, font, text_size, text_color):
@@ -21,8 +21,8 @@ class Button(Widget):
         self.slave_rect.y = self.y
         self.slave_rect_collide = pygame.Rect(self.slave_rect)
 
-        self.slave_rect_collide.x += self.master_form.x
-        self.slave_rect_collide.y += self.master_form.y
+        self.slave_rect_collide.x = self.master_form.x
+        self.slave_rect_collide.y = self.master_form.y
 
         self.slave_surface.fill(self.color_back)
 

@@ -1,7 +1,7 @@
 import pygame
 import sys
 from constantes import *
-from gui_button import Button
+from zgui_button import Button
 
 class Form:
     def __init__(self, master_surface, x, y, w, h, color_back, color_border, active):
