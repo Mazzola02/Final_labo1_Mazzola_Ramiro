@@ -1,0 +1,109 @@
+{
+  "level_music": "path/to/Level1 music.wav",
+  "imagen_fondo": "path/to/locations/forest/all.png",
+  "player_1": {
+    "x": 0,
+    "y": 700,
+    "frame_rate_ms": 50,
+    "move_rate_ms": 45,
+    "speed": 17
+  },
+  "bullet": {
+    "frame_rate_ms": 100,
+    "move_rate_ms": 10
+  },
+  "enemies": [
+    {
+      "x": 1000,
+      "y": 400,
+      "frame_rate_ms": 100,
+      "move_rate_ms": 40,
+      "speed": 5
+    },
+    {
+      "x": 200,
+      "y": 500,
+      "frame_rate_ms": 100,
+      "move_rate_ms": 40,
+      "speed": 5
+    },
+    {
+      "x": 900,
+      "y": 600,
+      "frame_rate_ms": 100,
+      "move_rate_ms": 40,
+      "speed": 5
+    },
+    {
+      "x": 1000,
+      "y": 700,
+      "frame_rate_ms": 100,
+      "move_rate_ms": 40,
+      "speed": 5
+    }
+  ],
+  "platforms": [
+    {
+      "x": 900,
+      "y": 650,
+      "w": 1100,
+      "h": 110,
+      "type": 9
+    },
+    {
+      "x": 950,
+      "y": 650,
+      "w": 1100,
+      "h": 110,
+      "type": 9
+    }
+  ],
+  "lives": [
+    {
+      "x": 1800,
+      "y": 780
+    }
+  ],
+  "fruits": [
+    {
+      "x": 500,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 600,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 700,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 800,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 900,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 1000,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 1100,
+      "y": 780,
+      "points": 10
+    },
+    {
+      "x": 1200,
+      "y": 780,
+      "points": 10
+    }
+  ]
+}

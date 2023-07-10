@@ -7,24 +7,24 @@ from plataforma import Platform
 from bullet import Bullet
 from botin import Loot
 from lives import Lives
-from new_button_class import Button
+from pause_menu import PauseMenu
+from main_menu import MainMenu
+
 screen = pygame.display.set_mode((ANCHO_VENTANA,ALTO_VENTANA)) 
 pygame.init()
-clock = pygame.time.Clock()
+clock = pygame.time.Clock()             
 seconds = 60
 #game variables
 game_pause = False
-# buttons
-resume_button = Button(1029,389,r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\Menu\resume_boton.png")
-options_button = Button(1029,513,r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\Menu\options_boton.png")
-quit_button = Button(1029,636,r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\Menu\quit_boton.png")
-font = pygame.font.Font(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\fonts\PressStart2P-Regular.ttf", 36)
+game_state = "main menu"
+game_menu = True
+game_running = False
 
+font = pygame.font.Font(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\fonts\PressStart2P-Regular.ttf", 36)
+level_music = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\Level1 music.wav")
 imagen_fondo = pygame.image.load(PATH_IMAGE + "locations\\forest\\all.png").convert_alpha()
 imagen_fondo = pygame.transform.scale(imagen_fondo,(ANCHO_VENTANA, ALTO_VENTANA))
-pause_menu = pygame.image.load(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\Menu\pause_menu.png").convert_alpha()
-pause_menu= pygame.transform.scale(pause_menu,(708,448))
-pause_menu_rect = pause_menu.get_rect()
+
 pause_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\pause.wav")
 player_1 = Player(x=0, y=700, frame_rate_ms=50, move_rate_ms=45, speed=17) 
 bullet = Bullet(frame_rate_ms=100, move_rate_ms=10)
@@ -48,26 +48,45 @@ fruit_6 = Loot(x=1000, y=780,points=10)
 fruit_7 = Loot(x=1100, y=780,points=10)
 fruit_8 = Loot(x=1200, y=780,points=10)
 
+pause_menu = PauseMenu(x=606,y=316)
+main_menu = MainMenu()
+
 lista_plataformas = [plataforma_1,plataforma_2]
 enemy_list = [enemy_1,enemy_2,enemy_3,enemy_4]
 fruit_list= [fruit_1,fruit_2,fruit_3,fruit_4,fruit_5,fruit_6,fruit_7,fruit_8]
 lives_list = [live_1]
-  
+
 while True:
-    if game_pause == True:
+    print(game_state)
+    if game_menu and not game_pause and not game_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        screen.blit(pause_menu,(pause_menu_rect.x+606,pause_menu_rect.y+316))
-        if resume_button.update(screen):
-            game_pause = False
-        if options_button.update(screen):
-            pass
-        if quit_button.update(screen):
-            pygame.quit()
+        if game_state == "running":
+            game_menu = False
+            game_running = True
+
+        game_state = main_menu.draw(screen)
         pygame.display.flip()
-    else:
-        
+
+    elif game_pause and not game_menu and not game_running:
+        level_music.set_volume(0)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        game_state = pause_menu.draw(screen)
+
+        if game_state == "running":
+            game_pause = False
+            game_running = True
+        elif game_state == "main menu":
+            game_menu = True
+            game_pause = False
+            game_running= False
+            main_menu.state = "main menu"
+        pygame.display.flip()
+
+    elif game_running and not game_menu and not game_pause:
         delta_ms = clock.tick(FPS)
         seconds -= (delta_ms / 1000)
         screen.blit(imagen_fondo,imagen_fondo.get_rect())
@@ -81,7 +100,9 @@ while True:
                     pygame.quit()
                 if event.key == pygame.K_ESCAPE:
                     game_pause = True
+                    game_running = False
                     pause_sound.play()
+                    pause_menu.state = "main pause"
             elif event.type == pygame.KEYUP: #SOLTAR TECLA
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     player_1.stay() 
