@@ -4,8 +4,8 @@ from auxiliar import Auxiliar
 
 class Lives:
     def __init__(self, x, y, frame_rate_ms=40):
-        self.fruit_animation = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\lives.png", 9, 1)
-        self.picked_up_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\Rise02.wav")
+        self.fruit_animation = Auxiliar.get_surface_from_sprite_sheet("images\\lives.png", 9, 1)
+        self.picked_up_sound = pygame.mixer.Sound("SOUNDS\\Rise02.wav")
         self.frame = 0
         # animacion
         self.animation = self.fruit_animation

@@ -9,67 +9,84 @@ from botin import Loot
 from lives import Lives
 from pause_menu import PauseMenu
 from main_menu import MainMenu
+import json
+
 
 screen = pygame.display.set_mode((ANCHO_VENTANA,ALTO_VENTANA)) 
 pygame.init()
 clock = pygame.time.Clock()             
-seconds = 60
 #game variables
 game_pause = False
 game_state = "main menu"
 game_menu = True
 game_running = False
 
-font = pygame.font.Font(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\fonts\PressStart2P-Regular.ttf", 36)
-level_music = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\Level1 music.wav")
-imagen_fondo = pygame.image.load(PATH_IMAGE + "locations\\forest\\all.png").convert_alpha()
-imagen_fondo = pygame.transform.scale(imagen_fondo,(ANCHO_VENTANA, ALTO_VENTANA))
-
-pause_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\pause.wav")
-player_1 = Player(x=0, y=700, frame_rate_ms=50, move_rate_ms=45, speed=17) 
-bullet = Bullet(frame_rate_ms=100, move_rate_ms=10)
-
-enemy_1 = Enemy(x=1000, y=400, frame_rate_ms=100, move_rate_ms=40, speed=5)
-enemy_2 = Enemy(x=200, y=500, frame_rate_ms=100, move_rate_ms=40, speed=5)
-enemy_3 = Enemy(x=900, y=600, frame_rate_ms=100, move_rate_ms=40, speed=5)
-enemy_4 = Enemy(x=1000, y=700, frame_rate_ms=100, move_rate_ms=40, speed=5)
-
-plataforma_1 = Platform(x=900,y=650,w=1100,h=110,type=9)
-plataforma_2 = Platform(x=950,y=650,w=1100,h=110,type=9)
-
-live_1 = Lives(x=1800,y=780)
-
-fruit_1 = Loot(x=500, y=780,points=10)
-fruit_2 = Loot(x=600, y=780,points=10)
-fruit_3 = Loot(x=700, y=780,points=10)
-fruit_4 = Loot(x=800, y=780,points=10)
-fruit_5 = Loot(x=900, y=780,points=10)
-fruit_6 = Loot(x=1000, y=780,points=10)
-fruit_7 = Loot(x=1100, y=780,points=10)
-fruit_8 = Loot(x=1200, y=780,points=10)
-
+# constantes
 pause_menu = PauseMenu(x=606,y=316)
 main_menu = MainMenu()
+pause_sound = pygame.mixer.Sound("SOUNDS\\pause.wav")
 
-lista_plataformas = [plataforma_1,plataforma_2]
-enemy_list = [enemy_1,enemy_2,enemy_3,enemy_4]
-fruit_list= [fruit_1,fruit_2,fruit_3,fruit_4,fruit_5,fruit_6,fruit_7,fruit_8]
-lives_list = [live_1]
+bullet = Bullet(frame_rate_ms=100, move_rate_ms=10)
+font = pygame.font.Font("images\\fonts\\PressStart2P-Regular.ttf", 36)
 
 while True:
-    print(game_state)
-    if game_menu and not game_pause and not game_running:
+    print(clock)
+    if game_menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        if game_state == "running":
-            game_menu = False
-            game_running = True
-
         game_state = main_menu.draw(screen)
         pygame.display.flip()
 
-    elif game_pause and not game_menu and not game_running:
+        if game_state == "running":
+            game_menu = False
+            game_running = True
+            # Nivel seleccionado
+            with open("LEVELS DATA\data_level_{}.json".format(main_menu.level_selected)) as json_file:
+                data = json.load(json_file)
+                level_music = pygame.mixer.Sound(data['level_music'])
+                imagen_fondo = pygame.image.load(data['imagen_fondo']).convert_alpha()
+            # Cargar Nivel
+            player_1 = Player(x=0, y=700, frame_rate_ms=50, move_rate_ms=45, speed=17) 
+            player_1.points = 0
+            seconds = 60
+            enemy_list = []
+            level_music.play(1)
+            for enemy_data in data['enemy_list']:
+                x = enemy_data['x']
+                y = enemy_data['y']
+                frame_rate_ms = enemy_data['frame_rate_ms']
+                move_rate_ms = enemy_data['move_rate_ms']
+                speed = enemy_data['speed']
+                enemy = Enemy(x, y, frame_rate_ms, move_rate_ms, speed)
+                enemy_list.append(enemy)
+
+            lista_plataformas=[]
+            for platforms_data in data['platforms']:
+                x = platforms_data["x"]
+                y = platforms_data["y"]
+                w = platforms_data["w"]
+                h = platforms_data["h"]
+                type = platforms_data["type"]
+                plataforma = Platform(x,y,w,h,type)
+                lista_plataformas.append(plataforma)
+
+            lives_list = []
+            for lives_data in data['lives_list']:
+                x = lives_data["x"]
+                y = lives_data["y"]
+                live = Lives(x,y)
+                lives_list.append(live)
+
+            fruit_list = []
+            for fruit_data in data['fruit_list']:
+                x = fruit_data["x"]
+                y = fruit_data["y"]
+                points = fruit_data["points"]
+                fruit = Loot(x,y,points)
+                fruit_list.append(fruit)
+
+    elif game_pause:
         level_music.set_volume(0)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -86,7 +103,11 @@ while True:
             main_menu.state = "main menu"
         pygame.display.flip()
 
-    elif game_running and not game_menu and not game_pause:
+    elif game_running:
+        if not pause_menu.music_on:
+            level_music.set_volume(0)
+        else:
+            level_music.set_volume(0.3)
         delta_ms = clock.tick(FPS)
         seconds -= (delta_ms / 1000)
         screen.blit(imagen_fondo,imagen_fondo.get_rect())

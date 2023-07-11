@@ -9,7 +9,7 @@ class Button():
         self.rect.x = x
         self.rect.y = y
         self.active = False
-        self.click_sound = pygame.mixer.Sound(r"c:\Users\Ramiro\Desktop\interface\click.ogg")
+        self.click_sound = pygame.mixer.Sound("SOUNDS\\click.ogg")
         if not sound_flag:
             self.click_sound.set_volume(0)
 

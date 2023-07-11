@@ -5,8 +5,8 @@ from auxiliar import Auxiliar
 
 class Bullet:
     def __init__(self,frame_rate_ms, move_rate_ms) -> None:
-        bullet_sprite_r = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\bullet2.png", 3, 1,True) 
-        bullet_sprite_l = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\bullet2.png", 3, 1,)
+        bullet_sprite_r = Auxiliar.get_surface_from_sprite_sheet("images\\bullet2.png", 3, 1,True) 
+        bullet_sprite_l = Auxiliar.get_surface_from_sprite_sheet("images\\bullet2.png", 3, 1,)
         self.bullet_r = bullet_sprite_r[:]
         self.bullet_l = bullet_sprite_l[:]
         self.bullet_state = "ready"
@@ -27,7 +27,7 @@ class Bullet:
         self.time_animation = 0
         self.frame_rate_ms = frame_rate_ms
         self.move_rate_ms = move_rate_ms
-        self.fire_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\shoot.wav")
+        self.fire_sound = pygame.mixer.Sound("SOUNDS\\shoot.wav")
 
     #FUNCION MOVER
     def do_movement(self, delta_ms):

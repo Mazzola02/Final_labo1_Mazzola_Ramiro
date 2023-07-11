@@ -1,7 +1,7 @@
 ANCHO_VENTANA = 1920
 ALTO_VENTANA = 1080
 FPS = 60
-DEBUG = False
+DEBUG = True
 IZQUIERDA = 0
 DERECHA = 1
 UP = 1
@@ -12,8 +12,6 @@ PLAYER_SIZE = (200,200)
 OPCION_JUGAR = 0
 OPCION_SALIR = 1
 MENU_WINDOW_SIZE = (800, 500)
-
-PATH_IMAGE = "C:\\Users\\Ramiro\\Documents\\JUEGO_RAMIRO_labo1\\images\\"
 
 # ---- COLORS ----
 RED = (255, 0, 0)

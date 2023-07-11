@@ -4,8 +4,8 @@ from auxiliar import Auxiliar
 
 class Loot:
     def __init__(self, x, y,points, frame_rate_ms=40):
-        self.fruit_animation = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\Wumpa Fruit.png", 14, 1)
-        self.picked_up_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\coin.ogg")
+        self.fruit_animation = Auxiliar.get_surface_from_sprite_sheet("images\\Wumpa Fruit.png", 14, 1)
+        self.picked_up_sound = pygame.mixer.Sound("SOUNDS\\coin.ogg")
         self.frame = 0
         # animacion
         self.animation = self.fruit_animation

@@ -4,8 +4,8 @@ from auxiliar import Auxiliar
 
 class Player:
     def __init__(self, x, y, frame_rate_ms, move_rate_ms, speed):
-        gengar_sprite_L = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\gengar-sprite-sheet.png", 12, 6)
-        gengar_sprite_R = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\gengar-sprite-sheet.png", 12, 6, True)
+        gengar_sprite_L = Auxiliar.get_surface_from_sprite_sheet("images\\gengar-sprite-sheet.png", 12, 6)
+        gengar_sprite_R = Auxiliar.get_surface_from_sprite_sheet("images\\gengar-sprite-sheet.png", 12, 6, True)
         
         # Caminar
         self.walk_r = gengar_sprite_R[:8]
@@ -29,10 +29,10 @@ class Player:
         self.jump_power = 50
         self.jump_l = gengar_sprite_L[24:29]
         self.jump_r = gengar_sprite_R[24:29]
-        self.jump_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\jump player.wav")
-        self.landing_sound =  pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\gorund landing sound.ogg")
+        self.jump_sound = pygame.mixer.Sound("SOUNDS\\jump player.wav")
+        self.landing_sound =  pygame.mixer.Sound("SOUNDS\\gorund landing sound.ogg")
         self.landing_sound.set_volume(0.2)
-        self.hurt_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\hurt.ogg")
+        self.hurt_sound = pygame.mixer.Sound("SOUNDS\\hurt.ogg")
         
         # Disparar
         self.shoot_l = gengar_sprite_L[35:40]
@@ -205,7 +205,7 @@ class Player:
             pygame.draw.rect(screen, GREEN, hitbox, 2)
             pygame.draw.rect(screen, BLUE, self.rect_ground_collision)
             pygame.draw.rect(screen, ORANGE, self.rect_hitbox,2)
-        self.lives_hud = pygame.image.load("C:\\Users\\Ramiro\\Documents\\JUEGO_RAMIRO_labo1\\images\\HUD\\{}.png".format(self.lives))
+        self.lives_hud = pygame.image.load("images\\HUD\\{}.png".format(self.lives))
         self.lives_hud = pygame.transform.scale(self.lives_hud, (162,51))
         screen.blit(self.lives_hud,self.lives_hud.get_rect())
         screen.blit(self.image, self.rect)

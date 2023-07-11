@@ -6,8 +6,8 @@ from auxiliar import Auxiliar
 class Enemy(Player):
     def __init__(self, x, y, frame_rate_ms, move_rate_ms, speed):
         super().__init__(x, y, frame_rate_ms, move_rate_ms, speed)
-        gastly_sprite_L = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\gastly_sprite.png", 9, 2)
-        gastly_sprite_R = Auxiliar.get_surface_from_sprite_sheet(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\images\gastly_sprite.png", 9, 2, True)
+        gastly_sprite_L = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2)
+        gastly_sprite_R = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2, True)
         # caminar
         self.walk_r = gastly_sprite_R[:9]
         self.walk_l = gastly_sprite_L[:9]
@@ -42,7 +42,7 @@ class Enemy(Player):
         # hitbox pies
         self.is_dead = False
         self.is_dying = False
-        self.been_shoot_sound = pygame.mixer.Sound(r"C:\Users\Ramiro\Documents\JUEGO_RAMIRO_labo1\SOUNDS\enemy explosion.ogg")
+        self.been_shoot_sound = pygame.mixer.Sound("SOUNDS\\enemy explosion.ogg")
         self.been_shoot_sound.set_volume(0.5)
         self.points = 50
         self.points_added_to_player = False
