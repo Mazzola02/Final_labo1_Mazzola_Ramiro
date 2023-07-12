@@ -3,12 +3,12 @@ from constantes import *
 from auxiliar import Auxiliar
 
 
-class Bullet:
+class Fire:
     def __init__(self,frame_rate_ms, move_rate_ms) -> None:
-        bullet_sprite_r = Auxiliar.get_surface_from_sprite_sheet("images\\bullet2.png", 3, 1,True) 
-        bullet_sprite_l = Auxiliar.get_surface_from_sprite_sheet("images\\bullet2.png", 3, 1,)
-        self.bullet_r = bullet_sprite_r[:]
-        self.bullet_l = bullet_sprite_l[:]
+        fire_sprite_r = Auxiliar.get_surface_from_sprite_sheet("images\\fire_sprite.png", 3, 1) 
+        fire_sprite_l = Auxiliar.get_surface_from_sprite_sheet("images\\fire_sprite.png", 3, 1,True)
+        self.bullet_r = fire_sprite_r[:]
+        self.bullet_l = fire_sprite_l[:]
         self.bullet_state = "ready"
         self.frame = 0
         self.move_x = 0
@@ -19,15 +19,16 @@ class Bullet:
         self.direction = None
         self.animation = self.bullet_r
         self.image = self.animation[self.frame]
-        self.image = pygame.transform.scale(self.image,BULLET_SIZE)#TAMAÑO DEL PERSONAJE(se declara dos veces en el codigo, una para que los rects tomen el valor de la imagen reescalada, y la otra para que se dibuje la imagen reescalada constantemente)
+        self.image = pygame.transform.scale(self.image,(200,200))#TAMAÑO DEL PERSONAJE(se declara dos veces en el codigo, una para que los rects tomen el valor de la imagen reescalada, y la otra para que se dibuje la imagen reescalada constantemente)
         self.rect = self.image.get_rect()
         #tiempo transcurrido
+        self.fire_time = 0
         self.time = 0
         self.time_movement = 0
         self.time_animation = 0
         self.frame_rate_ms = frame_rate_ms
         self.move_rate_ms = move_rate_ms
-        self.fire_sound = pygame.mixer.Sound("SOUNDS\\shoot.wav")
+        self.fire_sound = pygame.mixer.Sound("SOUNDS\\Fire.aif")
         self.sound_on: True
 
     #FUNCION MOVER
@@ -54,7 +55,7 @@ class Bullet:
                 self.frame = 0
             self.image = self.animation[self.frame]
             #TAMAÑO DEL PERSONAJE
-            self.image = pygame.transform.scale(self.image,BULLET_SIZE)
+            self.image = pygame.transform.scale(self.image,(200,200))
 
     def update(self, delta_ms):
         self.do_movement(delta_ms)
@@ -69,6 +70,7 @@ class Bullet:
             screen.blit(self.image, self.rect)
             
     def fire_bullet(self, speed, player_x, player_y, direction,delta_ms ,movement_range_x=600):
+        self.fire_time += (delta_ms / 1000)
         if self.bullet_state == "ready":
             self.rect.x = player_x + 120
             self.rect.y = player_y +100
@@ -77,10 +79,10 @@ class Bullet:
             self.direction_y = UP
             if direction == DERECHA:
                 self.animation = self.bullet_r
-                self.move_x = speed
+                self.move_x = 0
             elif direction == IZQUIERDA:
                 self.animation = self.bullet_l
-                self.move_x = -speed
+                self.move_x = 0
             if self.sound_on:
                 self.fire_sound.play()
             self.bullet_state = "fire"
@@ -98,3 +100,4 @@ class Bullet:
 
 
         
+         

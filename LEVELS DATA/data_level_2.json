@@ -1,97 +1,177 @@
 {
   "level_music": "SOUNDS\\Level1 music.wav",
+  "level_points": 460,
   "imagen_fondo": "images\\locations\\forest\\all.png",
   "enemy_list": [
     {
-      "x": 1000,
+      "x": 300,
       "y": 400,
       "frame_rate_ms": 100,
       "move_rate_ms": 40,
-      "speed": 5
+      "speed": 6
     },
     {
-      "x": 200,
+      "x": 700,
       "y": 500,
-      "frame_rate_ms": 100,
-      "move_rate_ms": 40,
-      "speed": 5
+      "frame_rate_ms": 120,
+      "move_rate_ms": 50,
+      "speed": 7
     },
     {
-      "x": 900,
+      "x": 1100,
       "y": 600,
-      "frame_rate_ms": 100,
-      "move_rate_ms": 40,
+      "frame_rate_ms": 150,
+      "move_rate_ms": 60,
+      "speed": 8
+    },
+    {
+      "x": 1500,
+      "y": 700,
+      "frame_rate_ms": 80,
+      "move_rate_ms": 35,
       "speed": 5
     },
     {
       "x": 1000,
-      "y": 700,
-      "frame_rate_ms": 100,
-      "move_rate_ms": 40,
-      "speed": 5
+      "y": 350,
+      "frame_rate_ms": 90,
+      "move_rate_ms": 45,
+      "speed": 6
+    },
+    {
+      "x": 1400,
+      "y": 450,
+      "frame_rate_ms": 110,
+      "move_rate_ms": 55,
+      "speed": 7
     }
   ],
   "platforms": [
     {
-      "x": 900,
+      "x": 300,
       "y": 650,
-      "w": 1100,
-      "h": 110,
+      "w": 300,
+      "h": 50,
       "type": 9
     },
     {
-      "x": 950,
+      "x": 700,
+      "y": 550,
+      "w": 400,
+      "h": 50,
+      "type": 9
+    },
+    {
+      "x": 1100,
       "y": 650,
-      "w": 1100,
-      "h": 110,
+      "w": 500,
+      "h": 50,
+      "type": 9
+    },
+    {
+      "x": 1500,
+      "y": 550,
+      "w": 400,
+      "h": 50,
+      "type": 9
+    },
+    {
+      "x": 1900,
+      "y": 650,
+      "w": 300,
+      "h": 50,
       "type": 9
     }
   ],
   "lives_list": [
     {
-      "x": 1800,
+      "x": 1300,
+      "y": 780
+    },
+    {
+      "x": 1700,
       "y": 780
     }
   ],
   "fruit_list": [
     {
+      "x": 300,
+      "y": 750,
+      "points": 10
+    },
+    {
+      "x": 400,
+      "y": 750,
+      "points": 10
+    },
+    {
       "x": 500,
-      "y": 780,
+      "y": 750,
       "points": 10
     },
     {
       "x": 600,
-      "y": 780,
+      "y": 750,
       "points": 10
     },
     {
       "x": 700,
-      "y": 780,
+      "y": 650,
       "points": 10
     },
     {
       "x": 800,
-      "y": 780,
+      "y": 650,
       "points": 10
     },
     {
       "x": 900,
-      "y": 780,
+      "y": 650,
       "points": 10
     },
     {
       "x": 1000,
-      "y": 780,
+      "y": 650,
       "points": 10
     },
     {
       "x": 1100,
-      "y": 780,
+      "y": 750,
       "points": 10
     },
     {
       "x": 1200,
-      "y": 780,
+      "y": 750,
+      "points": 10
+    },
+    {
+      "x": 1300,
+      "y": 750,
+      "points": 10
+    },
+    {
+      "x": 1400,
+      "y": 750,
+      "points": 10
+    },
+    {
+      "x": 1500,
+      "y": 650,
+      "points": 10
+    },
+    {
+      "x": 1600,
+      "y": 650,
+      "points": 10
+    },
+    {
+      "x": 1700,
+      "y": 650,
+      "points": 10
+    },
+    {
+      "x": 1800,
+      "y": 650,
       "points": 10
     }
   ]

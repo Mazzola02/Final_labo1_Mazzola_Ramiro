@@ -1,6 +1,7 @@
 import pygame
 from constantes import *
 from auxiliar import Auxiliar
+from bullet import Bullet
 
 class Player:
     def __init__(self, x, y, frame_rate_ms, move_rate_ms, speed):
@@ -30,9 +31,8 @@ class Player:
         self.jump_l = gengar_sprite_L[24:29]
         self.jump_r = gengar_sprite_R[24:29]
         self.jump_sound = pygame.mixer.Sound("SOUNDS\\jump player.wav")
-        self.landing_sound =  pygame.mixer.Sound("SOUNDS\\gorund landing sound.ogg")
-        self.landing_sound.set_volume(0.2)
         self.hurt_sound = pygame.mixer.Sound("SOUNDS\\hurt.ogg")
+        self.sound_on = True
         
         # Disparar
         self.shoot_l = gengar_sprite_L[35:40]
@@ -99,13 +99,15 @@ class Player:
                 self.move_y = -self.jump_power
                 self.animation = self.jump_r
                 self.is_jumping = True
-                self.jump_sound.play()
+                if self.sound_on:
+                    self.jump_sound.play()
             elif self.direction == IZQUIERDA and not self.is_jumping:
                 self.frame = 0
                 self.move_y = -self.jump_power
                 self.animation = self.jump_l
                 self.is_jumping = True
-                self.jump_sound.play()
+                if self.sound_on:
+                    self.jump_sound.play()
             
     def shoot(self):
         if not self.is_shooting and not self.is_hurt:
@@ -125,13 +127,15 @@ class Player:
             if enemy_direction == IZQUIERDA and self.animation != self.got_hurt_r:
                 self.frame = 0
                 self.animation = self.got_hurt_r
-                self.hurt_sound.play(1)
+                if self.sound_on:
+                    self.hurt_sound.play(1)
                 self.move_x = -20
                 self.move_y = -15
             elif enemy_direction == DERECHA and self.animation != self.got_hurt_l:
                 self.frame = 0
                 self.animation = self.got_hurt_l
-                self.hurt_sound.play(1)
+                if self.sound_on:
+                    self.hurt_sound.play(1)
                 self.move_x = +20
                 self.move_y = -15
             self.lives -= 1

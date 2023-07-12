@@ -2,18 +2,22 @@ import pygame
 from player import Player
 from constantes import *
 from auxiliar import Auxiliar
+from boss_fire import Fire
+import random
 
-class Enemy(Player):
+class Boss(Player):
     def __init__(self, x, y, frame_rate_ms, move_rate_ms, speed):
         super().__init__(x, y, frame_rate_ms, move_rate_ms, speed)
-        gastly_sprite_L = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2)
-        gastly_sprite_R = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2, True)
+        charizard_sprite_R = Auxiliar.get_surface_from_sprite_sheet("images\\charizard_sprite.png", 12, 2, True)
+        charizard_sprite_L = Auxiliar.get_surface_from_sprite_sheet("images\\charizard_sprite.png", 12, 2)
         # caminar
-        self.walk_r = gastly_sprite_R[:9]
-        self.walk_l = gastly_sprite_L[:9]
+        self.fly_r = charizard_sprite_L[4:8]
+        self.fly_l = charizard_sprite_R[4:8]
         # quieto
-        self.dying_r = gastly_sprite_R[9:18]
-        self.dying_l = gastly_sprite_L[9:18]
+        self.dying_r = charizard_sprite_L[14:15]
+        self.dying_l = charizard_sprite_R[14:15]
+        self.hurt_r = charizard_sprite_L[14:15]
+        self.hurt_l = charizard_sprite_R[14:15]
         self.frame = 0
         self.move_x = 0
         self.move_y = 0
@@ -25,9 +29,9 @@ class Enemy(Player):
         self.direction_y = UP
         # caida
         # animacion
-        self.animation = self.walk_r
+        self.animation = self.fly_r
         self.image = self.animation[self.frame]
-        self.image = pygame.transform.scale(self.image, (100, 100))  # TAMAÑO DEL PERSONAJE(se declara dos veces en el codigo, una para que los rects tomen el valor de la imagen reescalada, y la otra para que se dibuje la imagen reescalada constantemente)
+        self.image = pygame.transform.scale(self.image, (400, 400))  # TAMAÑO DEL PERSONAJE(se declara dos veces en el codigo, una para que los rects tomen el valor de la imagen reescalada, y la otra para que se dibuje la imagen reescalada constantemente)
         self.rect = self.image.get_rect()
         # posicion inicial
         self.rect.x = x
@@ -45,7 +49,8 @@ class Enemy(Player):
         self.been_shoot_sound = pygame.mixer.Sound("SOUNDS\\enemy explosion.ogg")
         self.been_shoot_sound.set_volume(0.5)
         self.sound_on = True
-        self.points = 50
+        self.points = 999
+        self.lives = 50
         self.points_added_to_player = False
         self.rect_hitbox = pygame.Rect(self.rect.x+30, self.rect.y+30,self.rect.w/2+40,self.rect.h/2+40)
 
@@ -66,26 +71,29 @@ class Enemy(Player):
     def been_shoot(self, bullet):
         retorno = False
         if self.rect_hitbox.colliderect(bullet.rect) and not self.is_dying:
-            self.is_dying = True
+            self.lives -= 1
+            print(self.lives)
+            if self.lives <= 1:
+                self.is_dying = True
             retorno = True
         return retorno
 
     # CAMINAR
-    def auto_walk(self, x=0, y=0, movement_range_x=200, movement_range_y=10):
+    def auto_walk(self, x=0, y=0, movement_range_x=1000, movement_range_y=8):
         if not self.is_dying:
             if (self.direction == DERECHA):
-                self.animation = self.walk_r
+                self.animation = self.fly_r
                 self.move_x = self.speed
                 self.movement_done_x += abs(self.move_x)
-                if self.movement_done_x >= movement_range_x:
+                if self.movement_done_x >= random.randint(0, movement_range_x):
                     self.movement_done_x = 0
                     self.direction = IZQUIERDA
 
             elif (self.direction == IZQUIERDA):
-                self.animation = self.walk_l
+                self.animation = self.fly_l
                 self.move_x = -self.speed
                 self.movement_done_x += abs(self.move_x)
-                if self.movement_done_x >= movement_range_x:
+                if self.movement_done_x >= random.randint(0, movement_range_x):
                     self.movement_done_x = 0
                     self.direction = DERECHA
 
@@ -138,7 +146,7 @@ class Enemy(Player):
                     self.dying_animation_time = 0
             self.image = self.animation[self.frame]
             # TAMAÑO DEL PERSONAJE
-            self.image = pygame.transform.scale(self.image, (150, 150))
+            self.image = pygame.transform.scale(self.image, (400, 400))
 
     def update(self, delta_ms, bullet):
             self.do_movement(delta_ms)

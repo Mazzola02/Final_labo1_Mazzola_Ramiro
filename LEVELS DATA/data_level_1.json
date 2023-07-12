@@ -1,5 +1,6 @@
 {
   "level_music": "SOUNDS\\Level1 music.wav",
+  "level_points": 280,
   "imagen_fondo": "images\\locations\\forest\\all.png",
   "enemy_list": [
     {

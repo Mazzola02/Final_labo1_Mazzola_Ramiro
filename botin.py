@@ -23,12 +23,14 @@ class Loot:
         self.points = points
         self.is_been_picked_up = False
         self.points_added = False
+        self.sound_on = True
 
     def is_picked_up(self,player_rect):
         if self.rect.colliderect(player_rect):
             if not self.is_been_picked_up: 
                 self.is_been_picked_up = True
-                self.picked_up_sound.play()
+                if self.sound_on:
+                    self.picked_up_sound.play()
 
     # ANIMACION
     def do_animation(self, delta_ms):

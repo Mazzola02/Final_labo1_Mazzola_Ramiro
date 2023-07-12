@@ -22,8 +22,6 @@ class PauseMenu():
         self.music_on = True
         self.done_button = Button(672, 638, "images\\Menu\\done_boton.png",True,True)
 
-
-
     def draw(self, screen):
         if self.state == "main pause":
             screen.blit(self.image_main, self.rect)
@@ -33,17 +31,16 @@ class PauseMenu():
                 self.state = "settings"
             if self.quit_button.update(screen):
                 self.state = "main menu"
-
         elif self.state == "settings":
             screen.blit(self.image_settings, self.rect)
-            # Efectos de sonido
+            # Efectos de sonido ON/OFF
             if self.sound_on:
                 if self.sound_checkmark.update(screen):
                     self.sound_on = False
             if not self.sound_on:
                 if self.disabled_sound_checkmark.update(screen):
                     self.sound_on = True
-            # Música
+            # Música ON/OFF
             if self.music_on:
                 if self.music_checkmark.update(screen):
                     self.music_on = False
