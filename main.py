@@ -5,9 +5,9 @@ from player import Player
 from enemigo import Enemy
 from boss import Boss
 from plataforma import Platform
-from bullet import Bullet
-from botin import Loot
+from botin import Loot 
 from lives import Lives
+from trap import Trap
 from pause_menu import PauseMenu
 from main_menu import MainMenu
 import json
@@ -20,22 +20,25 @@ game_pause = False
 game_state = "main menu"
 game_menu = True
 game_running = False
-
+just_opened = True
 # constantes
 pause_menu = PauseMenu(x=606,y=316)
 main_menu = MainMenu()
 pause_sound = pygame.mixer.Sound("SOUNDS\\pause.wav")
-
 font = pygame.font.Font("images\\fonts\\PressStart2P-Regular.ttf", 36)
+level1_points = 0
 
 while True:
+    delta_ms = clock.tick(FPS)
     if game_menu:
+        if just_opened == True:
+            main_menu.menu_music.play()
+            just_opened = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
         game_state = main_menu.draw(screen)
         pygame.display.flip()
-
         if game_state == "running":
             game_menu = False
             game_running = True
@@ -44,14 +47,15 @@ while True:
                 data = json.load(json_file)
                 level_music = pygame.mixer.Sound(data['level_music'])
                 imagen_fondo = pygame.image.load(data['imagen_fondo']).convert_alpha()
+                imagen_fondo = pygame.transform.scale(imagen_fondo,(ANCHO_VENTANA,ALTO_VENTANA))
                 level_points = data["level_points"]
             # Cargar Nivel
-            player_1 = Player(x=0, y=700, frame_rate_ms=50, move_rate_ms=45, speed=17) 
-            bullet = Bullet(frame_rate_ms=100, move_rate_ms=10)
+            player_1 = Player(x=0, y=820, frame_rate_ms=50, move_rate_ms=45, speed=17)
             player_1.points = 0
             seconds = 60
+            delta_ms = 0
             level_music.play(1)
-            level_music.set_volume(0.3)
+            level_music.set_volume(0.1)
             enemy_list = []
             if not main_menu.level_selected == 3:
                 for enemy_data in data['enemy_list']:
@@ -60,8 +64,19 @@ while True:
                     frame_rate_ms = enemy_data['frame_rate_ms']
                     move_rate_ms = enemy_data['move_rate_ms']
                     speed = enemy_data['speed']
-                    enemy = Enemy(x, y, frame_rate_ms, move_rate_ms, speed)
+                    range_x = enemy_data["range_x"]
+                    enemy = Enemy(x, y, frame_rate_ms, move_rate_ms, speed,range_x)
                     enemy_list.append(enemy)
+            traps_list=[]
+            if not main_menu.level_selected == 3:
+                for traps_data in data['trap_list']:
+                    x = traps_data['x']
+                    y = traps_data['y']
+                    range_x = traps_data['range_x']
+                    range_y = traps_data['range_y']
+                    speed = traps_data['speed']
+                    trap = Trap(x, y, range_x, range_y, speed)
+                    traps_list.append(trap)
 
             lista_plataformas=[]
             for platforms_data in data['platforms']:
@@ -112,17 +127,19 @@ while True:
             game_menu = True
             game_pause = False
             game_running= False
+            delta_ms = 0
             main_menu.state = "main menu"
+            main_menu.menu_music.play(-1)
         pygame.display.flip()
 
     elif game_running:
         if not pause_menu.music_on:
             level_music.set_volume(0)
         else:
-            level_music.set_volume(0.3)
+            level_music.set_volume(0.1)
         if not pause_menu.sound_on:
             player_1.sound_on = False
-            bullet.sound_on = False
+            player_1.bullet.sound_on = False
             for enemy in enemy_list:
                 enemy.sound_on = False
             for fruit in fruit_list:
@@ -131,7 +148,7 @@ while True:
                 live.sound_on = False
         elif pause_menu.sound_on:
             player_1.sound_on = True
-            bullet.sound_on = True
+            player_1.bullet.sound_on = True
             for enemy in enemy_list:
                 enemy.sound_on = True
             for fruit in fruit_list:
@@ -139,7 +156,7 @@ while True:
             for live in lives_list:
                 live.sound_on = True
 
-        delta_ms = clock.tick(FPS)
+        
         seconds -= (delta_ms / 1000)
         screen.blit(imagen_fondo,imagen_fondo.get_rect())
 
@@ -170,17 +187,17 @@ while True:
             player_1.stay()
         if(keys[pygame.K_SPACE]):
             player_1.jump()
-        if(keys[pygame.K_f] and bullet.bullet_state=="ready"):
-            bullet.fire_bullet(7 ,player_1.rect.x,player_1.rect.y,player_1.direction,delta_ms) #DISPARAR
+        if(keys[pygame.K_f] and player_1.bullet.bullet_state=="ready"):
+            player_1.bullet.fire_bullet(7 ,player_1.rect.x,player_1.rect.y,player_1.direction) #DISPARAR
             player_1.shoot()
-        if bullet.bullet_state == "fire":
-            bullet.fire_bullet(5 ,player_1.rect.x,player_1.rect.y,player_1.direction,delta_ms) #DISPARAR
+        if player_1.bullet.bullet_state == "fire":
+            player_1.bullet.fire_bullet(5 ,player_1.rect.x,player_1.rect.y,player_1.direction) #DISPARAR
             for enemy in enemy_list:
-                if enemy.been_shoot(bullet):
-                    bullet.bullet_state = "ready"
+                if enemy.been_shoot(player_1.bullet):
+                    player_1.bullet.bullet_state = "ready"
             for boss in boss_list:
-                if boss.been_shoot(bullet):
-                    bullet.bullet_state = "ready"
+                if boss.been_shoot(player_1.bullet):
+                    player_1.bullet.bullet_state = "ready"
         # ---- HUD ----
         time_hud = font.render("00:{}".format(str(round(seconds)).zfill(2)), True, LIGHT_GRAY)#se redondean los segundos para que no se muestren decimales y se agrega un cero con zfill
         points_hud = font.render("POINTS:{}".format(str(player_1.points).zfill(3)), True, LIGHT_GRAY)
@@ -189,36 +206,8 @@ while True:
         points_hud_rect = points_hud.get_rect()
         points_hud_rect.center = (ANCHO_VENTANA -200, 30)
         time_hud_rect.center = (ANCHO_VENTANA // 2, 30)
-
-        #DIBUJAR PLATAFORMAS
-        for plataforma in lista_plataformas: 
-            plataforma.draw(screen)
             
-        #ENEMIGOS
-        for enemy in enemy_list:
-            enemy.auto_walk(x=0, y=0,movement_range_x=500,movement_range_y=10)
-            enemy.update(delta_ms,bullet)
-            enemy.draw(screen)
-            if not enemy.is_dying and player_1.rect_hitbox.colliderect(enemy.rect_hitbox):
-                player_1.hurt_animation(enemy.direction) 
-            else:
-                if not enemy.points_added_to_player and enemy.is_dead:
-                    player_1.points += enemy.points
-                    enemy_list.remove(enemy)
-                    enemy.points_added_to_player = True
-        #BOSS
-        for boss in boss_list:
-            boss.auto_walk(x=0, y=0,movement_range_x=35000,movement_range_y=10)
-            boss.update(delta_ms,bullet)
-            boss.draw(screen)
-            if not boss.is_dying and player_1.rect_hitbox.colliderect(boss.rect_hitbox):
-                player_1.hurt_animation(boss.direction)
-            else:
-                if not boss.points_added_to_player and boss.is_dead:
-                    player_1.points += boss.points
-                    boss_list.remove(boss)
-                    boss.points_added_to_player = True
-        
+        #LOOT
         for fruit in fruit_list:
             fruit.draw(screen)
             fruit.update(delta_ms,player_1.rect_hitbox)
@@ -235,11 +224,47 @@ while True:
                     player_1.lives = 6
                 lives_list.remove(live)
 
+        #ENEMIGOS
+        for enemy in enemy_list:
+            enemy.auto_walk()
+            enemy.update(delta_ms,player_1.bullet)
+            enemy.draw(screen)
+            if not enemy.is_dying and player_1.rect_hitbox.colliderect(enemy.rect_hitbox):
+                player_1.hurt_animation(enemy.direction)
+            if player_1.rect_ground_collision.colliderect(enemy.top_hitbox):
+                enemy.is_dying = True
+                player_1.move_y = -25
+                player_1.jump_sound.play()
+            else:
+                if not enemy.points_added_to_player and enemy.is_dead:
+                    player_1.points += enemy.points
+                    enemy_list.remove(enemy) 
+                    enemy.points_added_to_player = True
+        for trap in traps_list:
+            trap.update(delta_ms,screen)
+            if player_1.rect_hitbox.colliderect(trap.rect_hitbox):
+                player_1.hurt_animation(player_1.direction) 
+        
+
+        #DIBUJAR PLATAFORMAS
+        for plataforma in lista_plataformas: 
+            plataforma.draw(screen)
+        #BOSS
+        for boss in boss_list:
+            boss.update(delta_ms,player_1.bullet)
+            boss.draw(screen)
+            if (not boss.is_dying and player_1.rect_hitbox.colliderect(boss.rect_hitbox)) or (player_1.rect_hitbox.colliderect(boss.fire.rect_hitbox) and boss.is_shooting):
+                player_1.hurt_animation(boss.direction)
+            else:
+                if not boss.points_added_to_player and boss.is_dead:
+                    player_1.points += boss.points
+                    boss_list.remove(boss)
+                    boss.points_added_to_player = True
+
         player_1.update(delta_ms, lista_plataformas)
         player_1.draw(screen)
-
-        bullet.update(delta_ms)
-        bullet.draw(screen)
+        player_1.bullet.draw(screen)
+        player_1.bullet.update(delta_ms)
         screen.blit(time_hud, time_hud_rect)
         screen.blit(points_hud, points_hud_rect)
 
@@ -256,5 +281,23 @@ while True:
             game_pause = False
             game_running= False
             main_menu.state = "level complete"
-            main_menu.level_completed_music.play()
+            
+            if main_menu.level_selected == 1:
+                main_menu.level_completed_music.play()
+                level1_points = player_1.points
+            elif main_menu.level_selected == 2:
+                main_menu.level_completed_music.play()
+                level2_points = player_1.points
+            elif main_menu.level_selected >= 3:
+                level3_points = player_1.points
+                main_menu.game_completed_music.play()
+                main_menu.total_score = level1_points + level2_points + level3_points
+                datos_score = str("Player1: {}".format(main_menu.total_score))
+                with open("SCORE.txt", "a") as archivo:
+                    archivo.write(datos_score+"\n")
+                archivo.close()
+                print("dsjdlksjdklasjkldjasl")
+            else:
+                main_menu.level_completed_music.play()
+
         pygame.display.flip()

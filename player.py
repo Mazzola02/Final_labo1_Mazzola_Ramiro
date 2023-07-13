@@ -32,6 +32,7 @@ class Player:
         self.jump_r = gengar_sprite_R[24:29]
         self.jump_sound = pygame.mixer.Sound("SOUNDS\\jump player.wav")
         self.hurt_sound = pygame.mixer.Sound("SOUNDS\\hurt.ogg")
+        self.fire_sound = pygame.mixer.Sound("SOUNDS\\shoot.wav")
         self.sound_on = True
         
         # Disparar
@@ -64,6 +65,8 @@ class Player:
         self.rect_ground_collision = pygame.Rect(self.rect.x + self.rect.w / 4 - 6, self.rect.y + self.rect.h - 33, self.rect.w / 2 + 8, 10)
         # hitbox
         self.rect_hitbox = pygame.Rect(self.rect.x+50, self.rect.y+30,self.rect.w/2,self.rect.h/2+40)
+        self.bullet = Bullet(frame_rate_ms=100, move_rate_ms=10)
+        self.bullet_list = []
         
     def stay(self):
         if not self.is_shooting:
@@ -115,10 +118,14 @@ class Player:
                 self.frame = 0
                 self.animation = self.shoot_r
                 self.is_shooting = True
+                if self.sound_on:
+                    self.fire_sound.play()
             elif self.direction == IZQUIERDA and self.animation != self.shoot_l:
                 self.frame = 0
                 self.animation = self.shoot_l
                 self.is_shooting = True
+                if self.sound_on:
+                    self.fire_sound.play()
 
     def hurt_animation(self,enemy_direction):
         if not self.is_hurt:
@@ -169,8 +176,13 @@ class Player:
         else:
             for plataforma in lista_plataformas:
                 if self.rect_ground_collision.colliderect(plataforma.rect_ground_collision):
+                    self.rect.y = plataforma.rect.y - self.rect.h +30
+                    return True
+                if plataforma.rect_ground_collision.colliderect(self.rect_ground_collision):
                     return True
             return False
+            
+
     
     def add_x(self, delta_x):
         self.rect.x += delta_x

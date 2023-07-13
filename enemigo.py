@@ -4,7 +4,7 @@ from constantes import *
 from auxiliar import Auxiliar
 
 class Enemy(Player):
-    def __init__(self, x, y, frame_rate_ms, move_rate_ms, speed):
+    def __init__(self, x, y,frame_rate_ms, move_rate_ms, speed,range_x,range_y=10):
         super().__init__(x, y, frame_rate_ms, move_rate_ms, speed)
         gastly_sprite_L = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2)
         gastly_sprite_R = Auxiliar.get_surface_from_sprite_sheet("images\\gastly_sprite.png", 9, 2, True)
@@ -19,6 +19,8 @@ class Enemy(Player):
         self.move_y = 0
         self.movement_done_x = 0
         self.movement_done_y = 0
+        self.movement_range_x = range_x
+        self.movement_range_y = range_y
         self.speed = speed
         self.speed_y = 1
         self.direction = DERECHA  # DIRECCION POR DEFECTO
@@ -48,6 +50,7 @@ class Enemy(Player):
         self.points = 50
         self.points_added_to_player = False
         self.rect_hitbox = pygame.Rect(self.rect.x+30, self.rect.y+30,self.rect.w/2+40,self.rect.h/2+40)
+        self.top_hitbox = pygame.Rect(self.rect.x+60, self.rect.y+20,30,10)
 
     # muriendo
     def die_animation(self):
@@ -71,13 +74,13 @@ class Enemy(Player):
         return retorno
 
     # CAMINAR
-    def auto_walk(self, x=0, y=0, movement_range_x=200, movement_range_y=10):
+    def auto_walk(self):
         if not self.is_dying:
             if (self.direction == DERECHA):
                 self.animation = self.walk_r
                 self.move_x = self.speed
                 self.movement_done_x += abs(self.move_x)
-                if self.movement_done_x >= movement_range_x:
+                if self.movement_done_x >= self.movement_range_x:
                     self.movement_done_x = 0
                     self.direction = IZQUIERDA
 
@@ -85,20 +88,20 @@ class Enemy(Player):
                 self.animation = self.walk_l
                 self.move_x = -self.speed
                 self.movement_done_x += abs(self.move_x)
-                if self.movement_done_x >= movement_range_x:
+                if self.movement_done_x >= self.movement_range_x:
                     self.movement_done_x = 0
                     self.direction = DERECHA
 
             if (self.direction_y == UP):
                 self.move_y = self.speed_y
                 self.movement_done_y += abs(self.move_y)
-                if self.movement_done_y >= movement_range_y:
+                if self.movement_done_y >= self.movement_range_y:
                     self.movement_done_y = 0
                     self.direction_y = DOWN
             elif (self.direction_y == DOWN):
                 self.move_y = -self.speed_y
                 self.movement_done_y += abs(self.move_y)
-                if self.movement_done_y >= movement_range_y:
+                if self.movement_done_y >= self.movement_range_y:
                     self.movement_done_y = 0
                     self.direction_y = UP
 
@@ -114,11 +117,13 @@ class Enemy(Player):
     def add_x(self, delta_x):
         self.rect.x += delta_x
         self.rect_hitbox.x += delta_x
+        self.top_hitbox.x += delta_x
 
     # MOVER RECTANGULOS EN Y
     def add_y(self, delta_y):
         self.rect.y += delta_y
         self.rect_hitbox.y += delta_y
+        self.top_hitbox.y += delta_y
 
     # ANIMACION
     def do_animation(self, delta_ms, bullet):
@@ -146,8 +151,6 @@ class Enemy(Player):
 
     def draw(self, screen):
             if (DEBUG):
-                hitbox = self.image.get_rect()
-                hitbox.topleft = (self.rect.x, self.rect.y)
-                pygame.draw.rect(screen, GREEN, hitbox, 2)
+                pygame.draw.rect(screen, ORANGE, self.top_hitbox)
                 pygame.draw.rect(screen, PURPLE, self.rect_hitbox,2)
             screen.blit(self.image, self.rect)

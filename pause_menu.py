@@ -1,5 +1,5 @@
 import pygame
-from new_button_class import Button
+from button_class import Button
 
 class PauseMenu():
     def __init__(self, x, y):

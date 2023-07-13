@@ -68,7 +68,7 @@ class Bullet:
                 pygame.draw.rect(screen,GREEN, hitbox, 2)
             screen.blit(self.image, self.rect)
             
-    def fire_bullet(self, speed, player_x, player_y, direction,delta_ms ,movement_range_x=600):
+    def fire_bullet(self, speed, player_x, player_y, direction,movement_range_x=600):
         if self.bullet_state == "ready":
             self.rect.x = player_x + 120
             self.rect.y = player_y +100
